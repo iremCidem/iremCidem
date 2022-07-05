@@ -1,0 +1,246 @@
+•	#include<Servo.h>
+•	#include <SoftwareSerial.h>
+•	#include <Adafruit_TCS34725.h>
+
+•	#define echoPin 8 
+•	#define trigPin 2
+•	#define MotorR1 6
+•	#define MotorR2 7
+•	#define MotorRE 9  
+•	#define MotorL1 4
+•	#define MotorL2 5
+•	#define MotorLE 3
+
+•	Servo servo_1;
+•	Servo servo_2;
+•	int renk=0;
+
+•	#include <SoftwareSerial.h>
+•	SoftwareSerial mySerial(0, 1); // RX, TX
+
+•	const int x_deger = A0;
+•	const int y_deger = A1;
+•	int sol_dirPin = 13;
+•	int sol_stepperPin = 12;
+•	int sag_dirPin = 10;
+•	int sag_stepperPin = 11;
+•	int cisim = 0;
+•	int basla_cisim = 0;
+
+
+•	int x_konum = 0;
+•	int y_konum = 0;
+•	int bir_x_konum = 0;
+•	int bir_y_konum = 0;
+•	int iki_x_konum = 0;
+•	int iki_y_konum = 0;
+•	int bir_x_konum_kayit = 0;
+•	int bir_y_konum_kayit = 0;
+•	int iki_x_konum_kayit = 0;
+•	int iki_y_konum_kayit = 0;
+
+•	int iki_hiz = 0;
+•	int bir_hiz = 0;
+•	int iki_hizi = 0;
+•	int bir_hizi = 0;
+•	int hiz_bir = 0;
+•	int hiz_iki = 0;
+•	long sure, uzaklik; 
+
+•	void setup() {
+•	int x_konum = analogRead(x_deger);
+•	int y_konum = analogRead(y_deger); 
+
+•	servo_1.attach(11, 500, 2500);
+•	servo_2.attach(10, 500, 2500);
+
+•	pinMode(echoPin, INPUT);
+•	pinMode(trigPin, OUTPUT);
+•	pinMode(MotorL1, OUTPUT);
+•	pinMode(MotorL2, OUTPUT);
+•	pinMode(MotorLE, OUTPUT); 
+•	pinMode(MotorR1, OUTPUT);
+•	pinMode(MotorR2, OUTPUT);
+•	pinMode(MotorRE, OUTPUT);
+
+
+•	Adafruit_TCS34725 
+•	tcs=Adafruit_TCS34725(TCS34725_INTEGRATIONTIME_50MS, TCS34725_GAIN_1X);
+•	Serial.begin(9600);
+•	}
+
+•	void loop() {
+
+•	digitalWrite(trigPin, LOW); 
+•	delayMicroseconds(5);
+•	digitalWrite(trigPin, HIGH); 
+•	delayMicroseconds(10);
+•	digitalWrite(trigPin, LOW); 
+
+•	sure = pulseIn(echoPin, HIGH); 
+•	uzaklik = sure / 29.1 / 2; 
+•	Serial.println(uzaklik);
+•	Serial.println(sure);
+
+•	while (cisim == 0)
+•	{
+•	int x_konum = analogRead(x_deger);
+•	int y_konum = analogRead(y_deger);
+
+
+•	int iki_x_konum = map(abs(x_konum), 0, 1024, 0, 11);
+•	int iki_y_konum = map(abs(y_konum), 0, 1024, 0, 11);
+•	iki_x_konum_kayit = iki_x_konum ;
+•	iki_y_konum_kayit = iki_y_konum ;
+
+•	if (cisim < 4)
+•	{
+•	bir_hiz = analogRead(x_deger);
+•	bir_hiz = analogRead(y_deger);
+•	bir_hizi = map(abs(bir_hiz), 0, 1024, 100, 1000);
+•	hiz_bir = bir_hizi;
+•	cisim = cisim + 1;     
+•	cisim = 0 ;
+•	delay(500);
+
+•	}
+•	if (analogRead(A0) < 900 ) 
+•	{
+•	dur (); 
+•	delay(150);
+•	renk_oku (); 
+•	delay(250);
+•	loop();
+•	} 
+
+•	else
+•	{
+•	cizgi();
+•	renk_oku ();
+•	delay(150);
+•	iki_hiz = analogRead(x_deger);
+•	iki_hiz = analogRead(y_deger);
+•	iki_hizi = map(abs(iki_hiz), 0, 1024, 100, 0);
+•	hiz_iki = iki_hizi;
+•	cisim = 4;
+•	basla_cisim = basla_cisim + 1;
+•	basla_cisim = 0 ;
+•	delay(500);
+•	loop();
+
+•	}
+•	}
+•	}
+
+•	void ileri(){  
+•	digitalWrite(MotorR1, HIGH); // Sağ motorun ileri hareketi aktif
+•	digitalWrite(MotorR2, LOW); // Sağ motorun geri hareketi pasif
+•	analogWrite(MotorRE, 150); // Sağ motorun hızı 150
+
+•	digitalWrite(MotorL1, HIGH); // Sol motorun ileri hareketi aktif
+•	digitalWrite(MotorL2, LOW); // Sol motorun geri hareketi pasif
+•	analogWrite(MotorLE, 150); // Sol motorun hızı 150   
+•	}
+
+•	void dur(){ 
+•	digitalWrite(MotorR1, LOW); // Sağ motorun ileri hareketi pasif
+•	digitalWrite(MotorR2, LOW); // Sağ motorun geri hareketi aktif
+•	analogWrite(MotorRE, 0); // Sağ motorun hızı 150
+
+•	digitalWrite(MotorL1, LOW); // Sol motorun ileri hareketi pasif
+•	digitalWrite(MotorL2, LOW); // Sol motorun geri hareketi aktif
+•	analogWrite(MotorLE, 0); // Sol motorun hızı 15
+•	}
+•	void bak () { 
+•	if (uzaklik < 15) // engel var
+•	{
+•	dur();
+•	renk_oku();
+•	}   
+
+•	else {
+•	renk_oku();
+•	}
+•	}
+
+•	void servo_al () {
+•	servo_1.write(180);
+•	delay(3000); // Wait for 3000 millisecond(s)
+•	servo_2.write(0);
+•	delay(3000); // Wait for 3000 millisecond(s)
+•	servo_1.write(0);
+•	delay(3000); // Wait for 3000 millisecond(s)
+•	servo_2.write(180);
+•	delay(3000); // Wait for 3000 millisecond(s)
+•	}
+
+•	void servo_sabit (){
+•	servo_1.write(0);
+•	delay(3000); // Wait for 3000 millisecond(s)
+•	servo_2.write(180);
+•	delay(3000); // Wait for 3000 millisecond(s)
+•	}
+
+
+•	void cizgi() {
+•	digitalWrite(MotorR1, HIGH);
+•	digitalWrite(MotorR2, LOW);
+•	digitalWrite(MotorL1, HIGH);
+•	digitalWrite(MotorL2, LOW);
+•	delay(75);
+•	digitalWrite(MotorR1, LOW);
+•	digitalWrite(MotorR2, LOW);
+•	digitalWrite(MotorL1, LOW);
+•	digitalWrite(MotorL2, LOW);
+•	delay(600);
+•	digitalWrite(MotorR1, HIGH);
+•	digitalWrite(MotorR2, LOW);
+•	digitalWrite(MotorL1, LOW);
+•	digitalWrite(MotorL2, HIGH);
+•	delay(580);
+•	digitalWrite(MotorR1, LOW);
+•	digitalWrite(MotorR2, LOW);
+•	digitalWrite(MotorL1, LOW);
+•	digitalWrite(MotorL2, LOW);
+•	delay(600);
+•	}
+
+•	void renk_oku() {
+•	uint16_t  red, green, blue;
+•	float average, k, y, m;
+•	average = (red+green+blue)/3;
+•	k = red/average;
+•	y = green/average;
+•	m = blue/average;
+•	Serial.print("Kirmzi: "); Serial.println(k);
+•	Serial.print("Yesil: "); Serial.println(y);
+•	Serial.print("Mavi: "); Serial.println(m); 
+•	delay(50);
+
+•	if((k>1.8)&&(y<0.75)&&(m<0.48)){
+•	Serial.println("Kirmizi ");
+•	renk = 1;
+•	servo_sabit ();
+•	}
+
+•	if((k<1.05)&&(y>1.28)&&(m<0.9)){
+•	Serial.println("Yesil ");
+•	renk = 2;
+•	servo_sabit ();
+•	}
+
+•	if((k<0.9)&&(y<1.22)&&(m>0.9)){
+•	Serial.println("Mavi ");
+•	renk = 3;
+•	servo_sabit ();
+•	}
+
+•	if((k>1.4)&&(y>1.09)&&(m<0.5)){
+•	Serial.println("Sari ");
+•	renk = 4;
+•	servo_al ();
+•	}
+•	return renk;
+•	}
+
+
