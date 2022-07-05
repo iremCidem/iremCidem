@@ -1,0 +1,110 @@
+import numpy as np
+import cv2
+#read the image and convert it into a NumPy array
+img = cv2.imread('1.2KOHM.jpg')
+cv2.imshow("Image", img)
+img_arr = np.array(img)
+#create an empty list to put the colors in
+list = []
+
+#creating a function where we define the rgb values of the colors
+def color_detect():
+
+    if (a <= 90 and a >= 60):
+        if (b <= 190 and b >= 165):
+            if (c <= 10 and c >= 0):
+                color = "green"
+                green=5
+                list.append(green)
+                print("green")
+    if (a <= 10 and a >= 0):
+        if (b <= 10 and b >= 0):
+            if (c <= 10 and c >= 0):
+                color = "black"
+                black=0
+                list.append(black)
+                print("black")
+    if (a <= 50 and a >= 35):
+        if (b <= 50 and b >= 30):
+            if (c <= 180 and c >= 150):
+                color = "brown"
+                brown=1
+                list.append(brown)
+                print("brown")
+    if (a <= 255 and a >= 240):
+        if (b <= 255 and b >= 230):
+            if (c <= 255 and c >= 230):
+                color = "white"
+                white = 9
+                list.append(white)
+                print("white")
+    if (a <= 10 and a >= 0):
+        if (b <= 180 and b >= 160):
+            if (c <= 255 and c >= 240):
+                color = "orange"
+                orange = 3
+                list.append(orange)
+                print("orange")
+    if (a <= 230 and a >= 205):
+        if (b <= 230 and b >= 205):
+            if (c <= 230 and c >= 205):
+                color = "silver"
+                silver = 10
+                list.append(silver)
+                print("silver")
+    if (a <= 120 and a >= 90):
+        if (b <= 120 and b >= 80):
+            if (c <= 125 and c >= 90):
+                color = "grey"
+                grey = 8
+                list.append(grey)
+                print("grey")
+    if (a <= 220 and a >= 180):
+        if (b <= 120 and b >= 110):
+            if (c <= 10 and c >= 0):
+                color = "blue"
+                blue = 6
+                list.append(blue)
+                print("blue")
+    if (a <= 10 and a >= 0):
+        if (b <= 230 and b >= 210):
+            if (c <= 240 and c >= 220):
+                color = "gold"
+                gold = 5
+                list.append(gold)
+                print("gold")
+    if (a <= 15 and a >= 0):
+        if (b <= 10 and b >= 0):
+            if (c <= 260 and c >= 200):
+                color = "red"
+                red = 2
+                list.append(red)
+                print("red")
+    if (a <= 10 and a >= 0):
+        if (b <= 255 and b >= 230):
+            if (c <= 255 and c >= 230):
+                color = "yellow"
+                yellow = 4
+                list.append(yellow)
+                print("yellow")
+
+#Finding the rgb values of certain pixel values of the image and reading the color
+(a,b,c)=img_arr[37,128]
+color_detect()
+(a,b,c)=img_arr[37,162]
+color_detect()
+(a,b,c)=img_arr[38,187]
+color_detect()
+(a,b,c)=img_arr[39,224]
+color_detect()
+
+#Calculating the resistance value with the necessary mathematical operations using the values of the colors
+x=str(list[0])+str(list[1])
+y=10**(list[2])
+
+print((int(x)*int(y))/1000,"{}".format("Kohm"),"%{}".format( list[3]))
+
+
+
+if(cv2.waitKey(0) == 27):
+    cv2.destroyAllWindows()
