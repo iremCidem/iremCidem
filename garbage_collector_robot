@@ -1,5 +1,4 @@
 •	#include<Servo.h>
-•	#include <SoftwareSerial.h>
 •	#include <Adafruit_TCS34725.h>
 
 •	#define echoPin 8 
@@ -15,41 +14,9 @@
 •	Servo servo_2;
 •	int renk=0;
 
-•	#include <SoftwareSerial.h>
-•	SoftwareSerial mySerial(0, 1); // RX, TX
-
-•	const int x_deger = A0;
-•	const int y_deger = A1;
-•	int sol_dirPin = 13;
-•	int sol_stepperPin = 12;
-•	int sag_dirPin = 10;
-•	int sag_stepperPin = 11;
-•	int cisim = 0;
-•	int basla_cisim = 0;
-
-
-•	int x_konum = 0;
-•	int y_konum = 0;
-•	int bir_x_konum = 0;
-•	int bir_y_konum = 0;
-•	int iki_x_konum = 0;
-•	int iki_y_konum = 0;
-•	int bir_x_konum_kayit = 0;
-•	int bir_y_konum_kayit = 0;
-•	int iki_x_konum_kayit = 0;
-•	int iki_y_konum_kayit = 0;
-
-•	int iki_hiz = 0;
-•	int bir_hiz = 0;
-•	int iki_hizi = 0;
-•	int bir_hizi = 0;
-•	int hiz_bir = 0;
-•	int hiz_iki = 0;
 •	long sure, uzaklik; 
 
 •	void setup() {
-•	int x_konum = analogRead(x_deger);
-•	int y_konum = analogRead(y_deger); 
 
 •	servo_1.attach(11, 500, 2500);
 •	servo_2.attach(10, 500, 2500);
@@ -82,34 +49,10 @@
 •	Serial.println(uzaklik);
 •	Serial.println(sure);
 
-•	while (cisim == 0)
-•	{
-•	int x_konum = analogRead(x_deger);
-•	int y_konum = analogRead(y_deger);
-
-
-•	int iki_x_konum = map(abs(x_konum), 0, 1024, 0, 11);
-•	int iki_y_konum = map(abs(y_konum), 0, 1024, 0, 11);
-•	iki_x_konum_kayit = iki_x_konum ;
-•	iki_y_konum_kayit = iki_y_konum ;
-
-•	if (cisim < 4)
-•	{
-•	bir_hiz = analogRead(x_deger);
-•	bir_hiz = analogRead(y_deger);
-•	bir_hizi = map(abs(bir_hiz), 0, 1024, 100, 1000);
-•	hiz_bir = bir_hizi;
-•	cisim = cisim + 1;     
-•	cisim = 0 ;
-•	delay(500);
-
-•	}
 •	if (analogRead(A0) < 900 ) 
 •	{
-•	dur (); 
+  bak();
 •	delay(150);
-•	renk_oku (); 
-•	delay(250);
 •	loop();
 •	} 
 
@@ -118,14 +61,7 @@
 •	cizgi();
 •	renk_oku ();
 •	delay(150);
-•	iki_hiz = analogRead(x_deger);
-•	iki_hiz = analogRead(y_deger);
-•	iki_hizi = map(abs(iki_hiz), 0, 1024, 100, 0);
-•	hiz_iki = iki_hizi;
-•	cisim = 4;
-•	basla_cisim = basla_cisim + 1;
-•	basla_cisim = 0 ;
-•	delay(500);
+
 •	loop();
 
 •	}
@@ -155,11 +91,11 @@
 •	if (uzaklik < 15) // engel var
 •	{
 •	dur();
-•	renk_oku();
+• renk oku();
 •	}   
 
 •	else {
-•	renk_oku();
+•	ileri();
 •	}
 •	}
 
@@ -221,24 +157,28 @@
 •	Serial.println("Kirmizi ");
 •	renk = 1;
 •	servo_sabit ();
+ileri ();
 •	}
 
 •	if((k<1.05)&&(y>1.28)&&(m<0.9)){
 •	Serial.println("Yesil ");
 •	renk = 2;
 •	servo_sabit ();
+ileri();
 •	}
 
 •	if((k<0.9)&&(y<1.22)&&(m>0.9)){
 •	Serial.println("Mavi ");
 •	renk = 3;
 •	servo_sabit ();
+ileri();
 •	}
 
 •	if((k>1.4)&&(y>1.09)&&(m<0.5)){
 •	Serial.println("Sari ");
 •	renk = 4;
 •	servo_al ();
+ileri();
 •	}
 •	return renk;
 •	}
